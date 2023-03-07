@@ -56,14 +56,15 @@ class Hotel(Resource):
         return {'message': 'Hotel not found.'}, 404
     
     def post(self, hotel_id):
+        if HotelModel.find_hotel(hotel_id):
+            return {"message": "Hotel id '{}' already exists.".format(hotel_id)}, 400
         
         dados = Hotel.argumentos.parse_args()
         
         obj_hotel = HotelModel(hotel_id, **dados)
-        novo_hotel = obj_hotel.json()
+        obj_hotel.save_hotel()
         
-        hoteis.append(novo_hotel)
-        return novo_hotel, 201
+        return obj_hotel.json(), 201
     
     
     def put(self, hotel_id):
